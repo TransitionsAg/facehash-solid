@@ -1,0 +1,47 @@
+{
+  "name": "@transitionsag/facehash-solid",
+  "version": "0.1.0",
+  "description": "Deterministic avatar faces from any string for SolidJS.",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "solid": "./dist/index.jsx",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsup",
+    "check": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "esbuild": "^0.25.12",
+    "esbuild-plugin-solid": "^0.6.0",
+    "solid-js": "^1.9.12",
+    "vite": "^7.3.1",
+    "vite-plugin-solid": "^2.11.8",
+    "tsup": "^8.5.1",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "solid-js": "^1.9.12"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}
