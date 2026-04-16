@@ -1,6 +1,7 @@
 import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
 import { Facehash } from "./facehash.js";
+import { FacehashProvider } from "./facehash-context.js";
 
 function App() {
   const [name, setName] = createSignal("cossistant");
@@ -53,16 +54,30 @@ function App() {
           </p>
         </div>
 
-        <Facehash
-          name={name()}
-          size={220}
-          className="rounded"
-          colors={["#0ea5e9", "#8b5cf6", "#ec4899", "#f59e0b", "#22c55e"]}
-          enableBlink
-          style={{
-            "border-radius": "32px",
+        <FacehashProvider
+          value={{
+            initials: true,
+            animations: {
+              blinking: true,
+              interactive: true,
+              intensity: "dramatic",
+            },
+            colors: {
+              background: {
+                colors: ["#0ea5e9", "#8b5cf6", "#ec4899", "#f59e0b", "#22c55e"],
+              },
+            },
           }}
-        />
+        >
+          <Facehash
+            name={name()}
+            size={220}
+            className="rounded"
+            style={{
+              "border-radius": "32px",
+            }}
+          />
+        </FacehashProvider>
 
         <div style={{ "font-size": "13px", color: "#94a3b8" }}>
           Live seed: <span style={{ color: "#e5e7eb" }}>{name()}</span>

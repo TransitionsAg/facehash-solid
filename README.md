@@ -15,9 +15,17 @@ pnpm add @transitionsag/facehash-solid
 ## Usage
 
 ```tsx
-import { Facehash } from "@transitionsag/facehash-solid";
+import { Facehash, FacehashProvider } from "@transitionsag/facehash-solid";
 
-<Facehash name="John Doe" />;
+<FacehashProvider
+  value={{
+    initials: 2,
+    animations: { blinking: true, interactive: true, intensity: "medium" },
+    colors: { background: { colors: ["#0ea5e9", "#8b5cf6"] } },
+  }}
+>
+  <Facehash name="John Doe" />
+</FacehashProvider>
 ```
 
 ## Demo
@@ -28,19 +36,19 @@ Run the local preview app:
 pnpm dev
 ```
 
-## Props
+## Defaults
 
-- `name`: seed string
-- `size`: number or CSS size
-- `variant`: `"gradient"` or `"solid"`
-- `intensity3d`: `"none" | "subtle" | "medium" | "dramatic"`
-- `interactive`: hover motion toggle
-- `showInitial`: show the name initials
-- `colors`: custom color palette
-- `colorClasses`: class-based palette
-- `gradientOverlayClass`: optional overlay class
-- `onRenderMouth`: custom center content
-- `enableBlink`: blinking eyes
+Use `FacehashProvider` to set project-wide defaults for:
+
+- `variant`
+- `initials`
+- `animations.intensity`
+- `animations.interactive`
+- `animations.blinking`
+- `colors.background.classes`
+- `colors.background.colors`
+
+`Facehash` accepts component-level overrides through its `config` prop.
 
 ## Notes
 

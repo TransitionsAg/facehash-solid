@@ -10,7 +10,7 @@ type FacehashSceneSvgProps = {
   height?: number | string;
   idPrefix: string;
   scene: FacehashScene;
-  showInitial: boolean;
+  initialText?: string;
   style?: JSX.CSSProperties;
   variant: Variant;
   width?: number | string;
@@ -90,7 +90,7 @@ export function FacehashSceneSvg(props: FacehashSceneSvgProps) {
           </g>
         </g>
 
-        {props.showInitial && (
+        {props.initialText && (
           <text
             dominant-baseline="middle"
             fill="currentColor"
@@ -101,7 +101,7 @@ export function FacehashSceneSvg(props: FacehashSceneSvgProps) {
             x={props.scene.initialLayout.x}
             y={props.scene.initialLayout.y}
           >
-            {props.scene.data.initial}
+            {props.initialText}
           </text>
         )}
       </g>

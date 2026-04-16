@@ -1,8 +1,21 @@
 import { createMemo, createSignal, createUniqueId, splitProps, type JSX } from "solid-js";
 import { createFacehashScene, type Intensity3D, type Variant } from "./core/index.js";
 import { FacehashSceneSvg } from "./facehash-scene-svg.js";
+import {
+  useFacehashConfig,
+  type FacehashBackgroundClassesConfig,
+  type FacehashBackgroundColorsConfig,
+  type FacehashConfig,
+  type FacehashBackgroundConfig,
+} from "./facehash-context.js";
 
 export type { Intensity3D, Variant } from "./core/index.js";
+export type {
+  FacehashAnimationsConfig,
+  FacehashBackgroundConfig,
+  FacehashConfig,
+} from "./facehash-context.js";
+export { FacehashProvider } from "./facehash-context.js";
 
 export type FacehashProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
@@ -11,15 +24,8 @@ export type FacehashProps = Omit<
   name: string;
   class?: string;
   size?: number | string;
-  variant?: Variant;
-  intensity3d?: Intensity3D;
-  interactive?: boolean;
-  showInitial?: boolean;
-  colors?: string[];
-  colorClasses?: string[];
-  gradientOverlayClass?: string;
+  config?: FacehashConfig;
   onRenderMouth?: () => JSX.Element;
-  enableBlink?: boolean;
   className?: string;
   style?: JSX.CSSProperties;
   onMouseEnter?: (event: MouseEvent & { currentTarget: HTMLDivElement }) => void;
@@ -30,23 +36,53 @@ function sanitizeId(value: string): string {
   return value.replace(/[^a-zA-Z0-9_-]/g, "-");
 }
 
-function joinClasses(...values: Array<string | undefined | false | null>): string {
-  return values.filter(Boolean).join(" ");
+function hasBackgroundClasses(
+  background: FacehashBackgroundConfig | undefined,
+): background is FacehashBackgroundClassesConfig {
+  return !!background && "classes" in background;
+}
+
+function hasBackgroundColors(
+  background: FacehashBackgroundConfig | undefined,
+): background is FacehashBackgroundColorsConfig {
+  return !!background && "colors" in background;
+}
+
+function mergeConfig(
+  base: FacehashConfig | undefined,
+  override: FacehashConfig | undefined,
+): FacehashConfig {
+  const baseBackground = base?.colors?.background;
+  const overrideBackground = override?.colors?.background;
+  const mergedBackground = hasBackgroundClasses(overrideBackground)
+    ? { classes: overrideBackground.classes }
+    : hasBackgroundColors(overrideBackground)
+      ? { colors: overrideBackground.colors }
+      : hasBackgroundClasses(baseBackground)
+        ? { classes: baseBackground.classes }
+        : hasBackgroundColors(baseBackground)
+          ? { colors: baseBackground.colors }
+          : undefined;
+
+  return {
+    variant: override?.variant ?? base?.variant,
+    initials: override?.initials ?? base?.initials,
+    animations: {
+      intensity: override?.animations?.intensity ?? base?.animations?.intensity,
+      interactive: override?.animations?.interactive ?? base?.animations?.interactive,
+      blinking: override?.animations?.blinking ?? base?.animations?.blinking,
+    },
+    colors: mergedBackground ? { background: mergedBackground } : undefined,
+  };
 }
 
 export function Facehash(props: FacehashProps) {
+  const facehashConfig = useFacehashConfig();
   const [local, domProps] = splitProps(props, [
     "name",
     "size",
-    "variant",
-    "intensity3d",
-    "interactive",
-    "showInitial",
-    "colors",
-    "colorClasses",
-    "gradientOverlayClass",
+    "config",
     "onRenderMouth",
-    "enableBlink",
     "className",
     "class",
     "style",
@@ -54,27 +90,46 @@ export function Facehash(props: FacehashProps) {
     "onMouseLeave",
   ]);
 
+  const config = createMemo(() => mergeConfig(facehashConfig, local.config));
+
   const [isHovered, setIsHovered] = createSignal(false);
   const uniqueId = createUniqueId();
 
-  const colorsLength = () => local.colorClasses?.length ?? local.colors?.length ?? 1;
+  const background = () => config().colors?.background;
+  const backgroundClasses = () => background()?.classes;
+  const backgroundColors = () => background()?.colors;
+  const colorsLength = () => backgroundClasses()?.length ?? backgroundColors()?.length ?? 1;
   const scene = createMemo(() =>
     createFacehashScene({
       name: local.name,
       colorsLength: colorsLength(),
-      intensity3d: local.intensity3d ?? "dramatic",
-      pose: isHovered() && (local.interactive ?? true) ? "front" : "seed",
+      intensity3d: config().animations?.intensity ?? "dramatic",
+      pose: isHovered() && (config().animations?.interactive ?? true) ? "front" : "seed",
     }),
   );
 
   const colorIndex = () => scene().data.colorIndex;
-  const backgroundClass = () => local.colorClasses?.[colorIndex()];
-  const backgroundColor = () => local.colors?.[colorIndex()];
+  const backgroundClass = () => backgroundClasses()?.[colorIndex()];
+  const backgroundColor = () => backgroundColors()?.[colorIndex()];
   const sizeValue = () =>
     typeof local.size === "number" ? `${local.size}px` : (local.size ?? "40px");
   const svgIdPrefix = sanitizeId(`facehash-${uniqueId}-${local.name}`);
-  const interactive = () => local.interactive ?? true;
-  const variant = () => local.variant ?? "gradient";
+  const interactive = () => config().animations?.interactive ?? true;
+  const variant = () => config().variant ?? "gradient";
+  const initialText = () => {
+    const initials = config().initials;
+
+    if (initials === false || local.onRenderMouth) {
+      return undefined;
+    }
+
+    const text = scene().data.initial;
+    if (typeof initials === "number") {
+      return text.slice(0, Math.max(0, initials));
+    }
+
+    return text;
+  };
   const rootClass = () =>
     ["facehash", backgroundClass(), local.className, local.class].filter(Boolean).join(" ");
   const rootStyle = (): JSX.CSSProperties => ({
@@ -88,12 +143,6 @@ export function Facehash(props: FacehashProps) {
     ...(backgroundColor() && !backgroundClass() ? { "background-color": backgroundColor() } : {}),
     ...(local.style ?? {}),
   });
-  const gradientStyle: JSX.CSSProperties = {
-    position: "absolute",
-    inset: 0,
-    "pointer-events": "none",
-    "z-index": 1,
-  };
   const mouthStyle: JSX.CSSProperties = {
     position: "absolute",
     left: "50%",
@@ -135,20 +184,16 @@ export function Facehash(props: FacehashProps) {
     >
       <FacehashSceneSvg
         backgroundColor={backgroundClass() ? "transparent" : (backgroundColor() ?? "transparent")}
-        enableBlink={local.enableBlink ?? false}
+        enableBlink={config().animations?.blinking ?? false}
         height="100%"
         idPrefix={svgIdPrefix}
         scene={scene()}
-        showInitial={(local.showInitial ?? true) && !local.onRenderMouth}
+        initialText={initialText()}
         style={{ color: "inherit" }}
-        variant={local.gradientOverlayClass ? "solid" : variant()}
+        variant={variant()}
         width="100%"
         withAnimatedProjection={interactive()}
       />
-
-      {variant() === "gradient" && local.gradientOverlayClass && (
-        <div class={local.gradientOverlayClass} data-facehash-gradient="" style={gradientStyle} />
-      )}
 
       {local.onRenderMouth && (
         <div data-facehash-mouth="" style={mouthStyle}>
