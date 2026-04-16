@@ -43,7 +43,7 @@ export function FacehashSceneSvg(props: FacehashSceneSvgProps) {
   const svgStyle = (): JSX.CSSProperties => ({
     display: "block",
     overflow: "visible",
-    ...(props.style ?? {}),
+    ...props.style,
   });
 
   return (

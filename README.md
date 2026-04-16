@@ -25,7 +25,7 @@ import { Facehash, FacehashProvider } from "@transitionsag/facehash-solid";
   }}
 >
   <Facehash name="John Doe" />
-</FacehashProvider>
+</FacehashProvider>;
 ```
 
 ## Demo

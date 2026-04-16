@@ -141,7 +141,7 @@ export function Facehash(props: FacehashProps) {
     width: sizeValue(),
     height: sizeValue(),
     ...(backgroundColor() && !backgroundClass() ? { "background-color": backgroundColor() } : {}),
-    ...(local.style ?? {}),
+    ...local.style,
   });
   const mouthStyle: JSX.CSSProperties = {
     position: "absolute",
