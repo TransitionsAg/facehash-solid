@@ -23,7 +23,6 @@ export type FacehashProps = Omit<
 > & {
   name: string;
   class?: string;
-  size?: number | string;
   config?: FacehashConfig;
   onRenderMouth?: () => JSX.Element;
   className?: string;
@@ -80,7 +79,6 @@ export function Facehash(props: FacehashProps) {
   const facehashConfig = useFacehashConfig();
   const [local, domProps] = splitProps(props, [
     "name",
-    "size",
     "config",
     "onRenderMouth",
     "className",
@@ -111,8 +109,6 @@ export function Facehash(props: FacehashProps) {
   const colorIndex = () => scene().data.colorIndex;
   const backgroundClass = () => backgroundClasses()?.[colorIndex()];
   const backgroundColor = () => backgroundColors()?.[colorIndex()];
-  const sizeValue = () =>
-    typeof local.size === "number" ? `${local.size}px` : (local.size ?? "40px");
   const svgIdPrefix = sanitizeId(`facehash-${uniqueId}-${local.name}`);
   const interactive = () => config().animations?.interactive ?? true;
   const variant = () => config().variant ?? "gradient";
@@ -138,8 +134,6 @@ export function Facehash(props: FacehashProps) {
     "align-items": "center",
     "justify-content": "center",
     overflow: "hidden",
-    width: sizeValue(),
-    height: sizeValue(),
     ...(backgroundColor() && !backgroundClass() ? { "background-color": backgroundColor() } : {}),
     ...local.style,
   });

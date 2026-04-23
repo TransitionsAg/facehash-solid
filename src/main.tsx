@@ -71,9 +71,10 @@ function App() {
         >
           <Facehash
             name={name()}
-            size={220}
             className="rounded"
             style={{
+              width: "256px",
+              height: "256px",
               "border-radius": "32px",
             }}
           />
