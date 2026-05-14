@@ -3,52 +3,52 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    deno-nixpkgs.url = "github:NixOS/nixpkgs/01fbdeef22b76df85ea168fbfe1bfd9e63681b30";
     flake-parts.url = "github:hercules-ci/flake-parts";
     git-hooks-nix.url = "github:cachix/git-hooks.nix";
     git-hooks-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      imports = [inputs.git-hooks-nix.flakeModule];
+  outputs = inputs @ { deno-nixpkgs, flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ inputs.git-hooks-nix.flakeModule ];
 
-      systems = [
-        "x86_64-linux"
-        "aarch64-darwin"
-      ];
+      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
 
-      perSystem = {
-        config,
-        pkgs,
-        ...
-      }: let
-        nodePkg = pkgs.nodejs_22;
-        pnpmPkg = pkgs.pnpm_10;
-      in {
-        pre-commit.settings = {
-          hooks = {
-            oxfmt = {
-              enable = true;
-              entry = "${pkgs.oxfmt}/bin/oxfmt";
-              files = "\\.(tsx?|jsx?)$";
-              types = ["text"];
-            };
+      perSystem = { config, pkgs, system, ... }:
+        let
+          deno = deno-nixpkgs.legacyPackages.${system}.deno;
+          shellPackages = [
+            deno
+          ];
+        in
+        {
+          pre-commit.settings = {
+            hooks = {
+              deno-fmt = {
+                enable = true;
+                entry = "${deno}/bin/deno fmt --config deno.json";
+                files = "^(vite\\.config\\.ts|deno\\.json|README\\.md)$";
+                types = [ "text" ];
+              };
 
-            oxlint = {
-              enable = true;
-              entry = "${pkgs.oxlint}/bin/oxlint";
-              files = "\\.(tsx?|jsx?)$";
-              types = ["text"];
+              deno-lint = {
+                enable = true;
+                entry = "${deno}/bin/deno lint --config deno.json";
+                files = "\\.(tsx?|jsx?)$";
+                types = [ "text" ];
+              };
             };
           };
-        };
 
-        devShells.default = pkgs.mkShell {
-          shellHook = config.pre-commit.installationScript;
-          packages = [nodePkg pnpmPkg];
-        };
+          devShells.default = pkgs.mkShell {
+            shellHook = config.pre-commit.installationScript;
+            packages = shellPackages;
+          };
 
-        checks.pre-commit = config.pre-commit.run;
-      };
+          devShells.ci = pkgs.mkShell {
+            packages = shellPackages ++ [ pkgs.git ];
+          };
+        };
     };
 }

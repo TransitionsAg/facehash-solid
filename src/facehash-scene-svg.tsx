@@ -1,8 +1,8 @@
 import { createEffect, type JSX } from "solid-js";
-import { ensureBlinkKeyframes, getBlinkStyle } from "./blink.js";
-import type { FacehashScene, Variant } from "./core/index.js";
+import { ensureBlinkKeyframes, getBlinkStyle } from "./blink.ts";
+import type { FacehashScene, Variant } from "./core/index.ts";
 
-type FacehashSceneSvgProps = {
+export type FacehashSceneSvgProps = {
   backgroundColor: string;
   class?: string;
   className?: string;
@@ -21,7 +21,7 @@ function sanitizeId(value: string): string {
   return value.replace(/[^a-zA-Z0-9_-]/g, "-");
 }
 
-export function FacehashSceneSvg(props: FacehashSceneSvgProps) {
+export function FacehashSceneSvg(props: FacehashSceneSvgProps): JSX.Element {
   createEffect(() => {
     if (props.enableBlink) {
       ensureBlinkKeyframes();

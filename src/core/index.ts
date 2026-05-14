@@ -1,4 +1,4 @@
-export { FACE_GEOMETRIES, type FaceGeometry } from "./face-geometry.js";
+export { FACE_GEOMETRIES, type FaceGeometry } from "./face-geometry.ts";
 export {
   type ComputeFacehashOptions,
   computeFacehash,
@@ -10,7 +10,7 @@ export {
   type FaceType,
   getColor,
   type Variant,
-} from "./facehash-data.js";
+} from "./facehash-data.ts";
 export {
   type CreateFacehashSceneOptions,
   createFacehashScene,
@@ -18,4 +18,4 @@ export {
   type FacehashProjection,
   type FacehashScene,
   type Intensity3D,
-} from "./scene.js";
+} from "./scene.ts";

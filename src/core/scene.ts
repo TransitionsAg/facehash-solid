@@ -1,5 +1,5 @@
-import { FACE_GEOMETRIES, type FaceGeometry } from "./face-geometry.js";
-import { computeFacehash, type FacehashData } from "./facehash-data.js";
+import { FACE_GEOMETRIES, type FaceGeometry } from "./face-geometry.ts";
+import { computeFacehash, type FacehashData } from "./facehash-data.ts";
 
 export type Intensity3D = "none" | "subtle" | "medium" | "dramatic";
 

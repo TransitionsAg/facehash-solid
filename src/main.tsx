@@ -1,7 +1,7 @@
 import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
-import { Facehash } from "./facehash.js";
-import { FacehashProvider } from "./facehash-context.js";
+import { Facehash } from "./facehash.tsx";
+import { FacehashProvider } from "./facehash-context.tsx";
 
 function App() {
   const [name, setName] = createSignal("cossistant");

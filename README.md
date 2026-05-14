@@ -1,6 +1,7 @@
 # @transitionsag/facehash-solid
 
-SolidJS port of [facehash](https://github.com/cossistantcom/cossistant/tree/main/packages/facehash).
+SolidJS port of
+[facehash](https://github.com/cossistantcom/cossistant/tree/main/packages/facehash).
 
 Credit for the original idea, design, and core implementation goes to the
 [cossistantcom/cossistant](https://github.com/cossistantcom/cossistant) project.
@@ -9,7 +10,7 @@ This package is a SolidJS port.
 ## Install
 
 ```sh
-pnpm add @transitionsag/facehash-solid
+deno add jsr:@transitionsag/facehash-solid
 ```
 
 ## Usage
@@ -33,7 +34,15 @@ import { Facehash, FacehashProvider } from "@transitionsag/facehash-solid";
 Run the local preview app:
 
 ```sh
-pnpm dev
+deno task dev
+```
+
+## Development
+
+```sh
+deno task check
+deno task lint
+deno task fmt --check
 ```
 
 ## Defaults

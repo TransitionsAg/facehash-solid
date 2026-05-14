@@ -1,0 +1,48 @@
+{
+  "name": "@transitionsag/facehash-solid",
+  "version": "0.0.0",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.tsx"
+  },
+  "nodeModulesDir": "auto",
+  "tasks": {
+    "check": "deno check src/**/*.ts src/**/*.tsx vite.config.ts",
+    "dev": "deno run -A npm:vite@8.0.10",
+    "fmt": "deno fmt",
+    "lint": "deno lint"
+  },
+  "imports": {
+    "solid-js": "npm:solid-js@1.9.12",
+    "vite": "npm:vite@8.0.10",
+    "vite-plugin-solid": "npm:vite-plugin-solid@2.11.12"
+  },
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "lib": ["deno.ns", "DOM", "DOM.Iterable", "ESNext"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "fmt": {
+    "include": ["deno.json", "README.md", "vite.config.ts"]
+  },
+  "lint": {
+    "include": ["src", "vite.config.ts"],
+    "rules": {
+      "exclude": [
+        "ban-types",
+        "jsx-button-has-type",
+        "jsx-key",
+        "no-slow-types",
+        "require-await",
+        "verbatim-module-syntax"
+      ]
+    }
+  },
+  "publish": {
+    "include": ["deno.json", "README.md", "src"],
+    "exclude": ["src/main.tsx"]
+  }
+}

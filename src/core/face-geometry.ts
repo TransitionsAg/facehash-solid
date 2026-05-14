@@ -1,4 +1,4 @@
-import type { FaceType } from "./facehash-data.js";
+import type { FaceType } from "./facehash-data.ts";
 
 export type FaceGeometry = {
   viewBox: {

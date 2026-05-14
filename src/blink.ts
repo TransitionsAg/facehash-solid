@@ -1,5 +1,5 @@
 import type { JSX } from "solid-js";
-import type { FacehashBlinkTiming } from "./core/index.js";
+import type { FacehashBlinkTiming } from "./core/index.ts";
 
 const BLINK_KEYFRAMES = `
 @keyframes facehash-blink {
@@ -10,7 +10,7 @@ const BLINK_KEYFRAMES = `
 
 let keyframesInjected = false;
 
-export function ensureBlinkKeyframes() {
+export function ensureBlinkKeyframes(): void {
   if (keyframesInjected || typeof document === "undefined") {
     return;
   }

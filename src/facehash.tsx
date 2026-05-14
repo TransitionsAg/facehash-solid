@@ -1,21 +1,21 @@
 import { createMemo, createSignal, createUniqueId, splitProps, type JSX } from "solid-js";
-import { createFacehashScene, type Intensity3D, type Variant } from "./core/index.js";
-import { FacehashSceneSvg } from "./facehash-scene-svg.js";
+import { createFacehashScene } from "./core/index.ts";
+import { FacehashSceneSvg } from "./facehash-scene-svg.tsx";
 import {
   useFacehashConfig,
   type FacehashBackgroundClassesConfig,
   type FacehashBackgroundColorsConfig,
   type FacehashConfig,
   type FacehashBackgroundConfig,
-} from "./facehash-context.js";
+} from "./facehash-context.tsx";
 
-export type { Intensity3D, Variant } from "./core/index.js";
+export type { Intensity3D, Variant } from "./core/index.ts";
 export type {
   FacehashAnimationsConfig,
   FacehashBackgroundConfig,
   FacehashConfig,
-} from "./facehash-context.js";
-export { FacehashProvider } from "./facehash-context.js";
+} from "./facehash-context.tsx";
+export { FacehashProvider } from "./facehash-context.tsx";
 
 export type FacehashProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
@@ -75,7 +75,7 @@ function mergeConfig(
   };
 }
 
-export function Facehash(props: FacehashProps) {
+export function Facehash(props: FacehashProps): JSX.Element {
   const facehashConfig = useFacehashConfig();
   const [local, domProps] = splitProps(props, [
     "name",

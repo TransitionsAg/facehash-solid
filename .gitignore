@@ -1,5 +1,7 @@
 # Dependencies
 node_modules
+.direnv/
+.pre-commit-config.yaml
 
 # IDE
 .vscode/
@@ -13,6 +15,7 @@ Thumbs.db
 
 # Build artifacts
 dist/
+.vite/
 
 # Environment
 .env

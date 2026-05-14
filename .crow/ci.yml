@@ -1,0 +1,14 @@
+when:
+  - event: [push, pull_request]
+
+steps:
+  verify:
+    image: nixos/nix:latest
+    user: root
+    environment:
+      NIX_CONFIG: "experimental-features = nix-command flakes"
+    commands:
+      - nix develop .#ci --command deno fmt --check
+      - nix develop .#ci --command deno lint
+      - nix develop .#ci --command deno task check
+      - nix develop .#ci --command deno publish --dry-run

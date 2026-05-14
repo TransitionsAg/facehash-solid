@@ -1,5 +1,5 @@
 import { createContext, useContext, type JSX } from "solid-js";
-import type { Intensity3D, Variant } from "./core/index.js";
+import type { Intensity3D, Variant } from "./core/index.ts";
 
 export type FacehashAnimationsConfig = {
   intensity?: Intensity3D;
@@ -37,10 +37,10 @@ export type FacehashProviderProps = {
   children?: JSX.Element;
 };
 
-export function FacehashProvider(props: FacehashProviderProps) {
+export function FacehashProvider(props: FacehashProviderProps): JSX.Element {
   return <FacehashContext.Provider value={props.value}>{props.children}</FacehashContext.Provider>;
 }
 
-export function useFacehashConfig() {
+export function useFacehashConfig(): FacehashConfig | undefined {
   return useContext(FacehashContext);
 }
